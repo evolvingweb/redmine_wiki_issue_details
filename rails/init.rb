@@ -24,6 +24,7 @@ end
     desc "Display an issue and it's details.  Examples:\n\n" +
       "  !{{issue_details(100)}}\n\n" +
       "  Digitized 24 hour firmware - Bug #391 Robust disintermediate customer loyalty - 25.23 hours"
+
     macro :issue_details do |obj, args|
       issue_id = args[0]
       issue = Issue.visible.find_by_id(issue_id)
@@ -47,12 +48,12 @@ end
         response << project_link
         response << ' - '
         response << link_to_issue(issue) + ' '
-        response << estimates + ' '
         response << "(#{h(issue.status)})"
         response << '</span>' if issue.closed?
       end
     end
 
+    # EWHACK an alias for issue_details
     macro :id do |obj, args|
       issue_id = args[0]
       issue = Issue.visible.find_by_id(issue_id)
@@ -76,7 +77,6 @@ end
         response << project_link
         response << ' - '
         response << link_to_issue(issue) + ' '
-        response << estimates + ' '
         response << "(#{h(issue.status)})"
         response << '</span>' if issue.closed?
       end
