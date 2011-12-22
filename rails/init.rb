@@ -40,26 +40,16 @@ Redmine::Plugin.register :redmine_wiki_issue_details do
 
       return '' unless issue
 
-      if Redmine::AccessControl.permission(:view_estimates) && !User.current.allowed_to?(:view_estimates, issue.project)
-        # Check if the view_estimates permission is defined and the user
-        # is allowed to view the estimate
-        estimates = ''
-      elsif issue.estimated_hours && issue.estimated_hours > 0
-        estimates = "- #{l_hours(issue.estimated_hours)}"
-      else
-        estimates = "- <strong>#{l(:redmine_wiki_issue_details_text_needs_estimate)}</strong>"
-      end
-
       project_link = link_to(h(issue.project), :controller => 'projects', :action => 'show', :id => issue.project)
 
       # Collect extra information in case we need to display it.
       priority = IssuePriority.find_by_id(issue.priority_id).name
 
-      if IssueCategory.find_by_id(issue.category_id) then
-        category = IssueCategory.find_by_id(issue.category_id).name
-      else
-        category = "<strong>No Category</strong>"
-      end
+      # if IssueCategory.find_by_id(issue.category_id) then
+      #   category = IssueCategory.find_by_id(issue.category_id).name
+      # else
+      #   category = "<strong>No Category</strong>"
+      # end
 
       if User.find_by_id(issue.assigned_to_id) then 
         assignee = User.find_by_id(issue.assigned_to_id).name
@@ -73,11 +63,10 @@ Redmine::Plugin.register :redmine_wiki_issue_details do
       returning '' do |response|
         response << '<span style="text-decoration: line-through;">' if issue.closed?
         response << project_link
-        response << ' <' + category + '>' if args[1..-1].include? 'version'
+        # response << ' <' + category + '>' if args[1..-1].include? 'version'
         response << ' - '
         response << "(" + priority + ")" + ' ' if args[1..-1].include? 'priority'
         response << link_to_issue(issue) + ' '
-        response << estimates + ' '
         response << "(#{h(issue.status)})"
         response << ": " + assignee if args[1..-1].include? 'assignee'
         response << '</span>' if issue.closed?
